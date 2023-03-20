@@ -137,11 +137,11 @@ def in_op_time(hm,op_list_list):
             in_op = True
     return in_op
 
-def download_from_gds(para):
+def download_from_gds(para,saveday):
     #遍历下载
     now = datetime.datetime.now()
     print("于"+str(now)+"开始下载")
-    weekago = now - datetime.timedelta(days=7)
+    weekago = now - datetime.timedelta(days=saveday) #days数据为当前时间往前保存资料的天数，mdfs最多保存10天。
     hm = now.hour * 100 + now.minute
     ip,port = meteva.base.io.read_gds_ip_port(para["ip_port_file"])
     service = meteva.base.io.GDSDataService(ip, port)
@@ -168,7 +168,7 @@ def download_from_gds(para):
     download_grid_list = []
     for key in para["grid_origin_dirs"].keys():
         down_set_group  = para["grid_origin_dirs"][key]
-        #print(down_set_group)
+        print(down_set_group)
         for down_set in down_set_group:
             if in_op_time(hm, down_set[1]):
                 dir_list = []
@@ -206,7 +206,7 @@ def download_from_gds(para):
     else:
         download_mp(ip, port, para["local_binary_dir"], para["local_sta_dir"], para["local_grid_dir"], download_sta_list, download_grid_list,
                 para["cpu_count"])
-        download_from_gds(para)
+        download_from_gds(para,saveday)
 
 
 def remove(dir,save_day):
